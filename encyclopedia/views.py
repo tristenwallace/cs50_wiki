@@ -8,3 +8,13 @@ def index(request):
         "entries": util.list_entries()
     })
 
+def entry(request, title):
+    if not util.get_entry(title):
+        return render(request, "encyclopedia/error.html", {
+            "message": "title does not exist"
+        })
+
+    return render(request, "encyclopedia/entry.html", {
+        "title": title,
+        "content": util.get_entry(title)
+    })
