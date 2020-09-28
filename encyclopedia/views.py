@@ -44,6 +44,7 @@ def search(request):
     
     return render(request, "encyclopedia/search.html", {
         "results": results
+<<<<<<< HEAD
     })
 
 class AddPageForm(forms.Form):
@@ -73,3 +74,6 @@ def add(request):
             
             return HttpResponseRedirect(reverse("index"))
     
+=======
+    })
+>>>>>>> c0d649a332863278ec4d13222db12ba93a88382f
