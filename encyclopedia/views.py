@@ -44,7 +44,6 @@ def search(request):
     
     return render(request, "encyclopedia/search.html", {
         "results": results
-<<<<<<< HEAD
     })
 
 class AddPageForm(forms.Form):
@@ -73,7 +72,28 @@ def add(request):
             util.save_entry(title, content)
             
             return HttpResponseRedirect(reverse("index"))
-    
-=======
-    })
->>>>>>> c0d649a332863278ec4d13222db12ba93a88382f
+
+class EditPageForm(forms.Form):
+    title = forms.CharField(widget=forms.HiddenInput())
+    content = forms.CharField(widget=forms.Textarea, label="Content")
+
+def edit(request):
+    if request.method == "GET":
+        title = request.GET["title"]
+        content = util.get_entry(title)
+        form = EditPageForm(initial={'title': title, 'content': content})
+
+        return render(request, "encyclopedia/edit-page.html", {
+            "title": title,
+            "form": form
+        })
+
+    if request.method == "POST":
+        form = EditPageForm(request.POST)
+
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse("index"))
