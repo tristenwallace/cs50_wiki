@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django import forms
 from . import util
+from random import randint
 
 
 def index(request):
@@ -97,3 +98,13 @@ def edit(request):
 
         util.save_entry(title, content)
         return HttpResponseRedirect(reverse("index"))
+
+def random(request):
+    entries = util.list_entries()
+    title = entries[randint(0, len(entries)-1)]
+    content = util.get_entry(title)
+
+    return render(request, "encyclopedia/entry.html", {
+        "title": title,
+        "content": content
+    })
