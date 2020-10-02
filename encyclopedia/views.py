@@ -4,7 +4,10 @@ from django.http import HttpResponseRedirect
 from django import forms
 from . import util
 from random import randint
+<<<<<<< HEAD
 from markdown2 import markdown
+=======
+>>>>>>> b684a0ee130e0859e8206a1619722d6c74b60b7b
 
 
 def index(request):
@@ -103,7 +106,12 @@ def edit(request):
 def random(request):
     entries = util.list_entries()
     title = entries[randint(0, len(entries)-1)]
+<<<<<<< HEAD
     content = markdown(util.get_entry(title))
+=======
+    content = util.get_entry(title)
+
+>>>>>>> b684a0ee130e0859e8206a1619722d6c74b60b7b
     return render(request, "encyclopedia/entry.html", {
         "title": title,
         "content": content
