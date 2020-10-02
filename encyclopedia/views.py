@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django import forms
 from . import util
+from random import randint
+from markdown2 import markdown
 
 
 def index(request):
@@ -18,7 +20,7 @@ def entry(request, title):
 
     return render(request, "encyclopedia/entry.html", {
         "title": title,
-        "content": util.get_entry(title)
+        "content": markdown(util.get_entry(title))
     })
 
 def search(request):
@@ -39,12 +41,11 @@ def search(request):
     if len(results) is 1:
         return render(request, "encyclopedia/entry.html", {
             "title": results[0],
-            "content": util.get_entry(results[0])
+            "content": markdown(util.get_entry(results[0]))
         })
     
     return render(request, "encyclopedia/search.html", {
         "results": results
-<<<<<<< HEAD
     })
 
 class AddPageForm(forms.Form):
@@ -73,7 +74,37 @@ def add(request):
             util.save_entry(title, content)
             
             return HttpResponseRedirect(reverse("index"))
-    
-=======
+
+class EditPageForm(forms.Form):
+    title = forms.CharField(widget=forms.HiddenInput())
+    content = forms.CharField(widget=forms.Textarea, label="Content")
+
+def edit(request):
+    if request.method == "GET":
+        title = request.GET["title"]
+        content = util.get_entry(title)
+        form = EditPageForm(initial={'title': title, 'content': content})
+
+        return render(request, "encyclopedia/edit-page.html", {
+            "title": title,
+            "form": form
+        })
+
+    if request.method == "POST":
+        form = EditPageForm(request.POST)
+
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse("index"))
+
+def random(request):
+    entries = util.list_entries()
+    title = entries[randint(0, len(entries)-1)]
+    content = markdown(util.get_entry(title))
+    return render(request, "encyclopedia/entry.html", {
+        "title": title,
+        "content": content
     })
->>>>>>> c0d649a332863278ec4d13222db12ba93a88382f
